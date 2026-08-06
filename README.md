@@ -25,6 +25,7 @@
 - [Deployment Methods](#deployment-methods)
   - [Docker Compose](#docker-compose)
   - [Kubernetes with Helm](#kubernetes-with-helm)
+  - [Production Network Templates](#production-network-templates)
 - [Configuration](#configuration)
 - [Ports](#ports)
 - [Volumes](#volumes)
@@ -251,6 +252,13 @@ resources:
 ```
 
 For complete configuration options, see [charts/genieacs/values.yaml](charts/genieacs/values.yaml).
+
+### Production Network Templates
+
+For HQ/branch WireGuard templates (MikroTik) and production reverse proxy
+configuration (Nginx + Docker Compose override), see:
+
+- [examples/production/README.md](examples/production/README.md)
 
 ## Configuration
 
