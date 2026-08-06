@@ -1,0 +1,42 @@
+services:
+  genieacs:
+    restart: unless-stopped
+    # keep UI/CWMP/NBI/FS internal in Docker network; publish externally via nginx only
+    expose:
+      - "3000"
+      - "7547"
+      - "7557"
+      - "7567"
+    ports: []
+    environment:
+      GENIEACS_UI_JWT_SECRET: ${GENIEACS_UI_JWT_SECRET:?set in .env}
+      GENIEACS_MONGODB_CONNECTION_URL: ${GENIEACS_MONGODB_CONNECTION_URL:?set in .env}
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: genieacs-nginx
+    restart: unless-stopped
+    depends_on:
+      genieacs:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "7547:7547"
+    volumes:
+      - ./examples/production/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./examples/production/certs:/etc/nginx/certs:ro
+      - nginx_logs:/var/log/nginx
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      - genieacs_network
+
+volumes:
+  nginx_logs:
